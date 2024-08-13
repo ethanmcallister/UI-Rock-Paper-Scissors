@@ -1,0 +1,61 @@
+body {
+    background-color: aquamarine;
+}
+
+#main-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#title-container {
+    margin: 3%;
+    display: flex;
+    justify-content: center;
+    font-size: large;
+}
+
+#button-container {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+    margin: 0% 5%;
+    gap: 5%;
+}
+
+#button-container button {
+    background: none;
+    border: none;
+}
+
+button img {
+    display: block;
+    width: 200px;
+}
+
+button:hover img {
+    opacity: 0.8;
+}
+
+#score {
+    display: flex;
+    justify-content: center;
+    gap: 15%;
+    margin: 3%;
+}
+
+#update-container {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+#play-again-button {
+    font-size: large;
+    width: 10%;
+    height: 10%;
+    background-color: rgb(247, 242, 242);
+}
+
+#play-again-button:hover {
+    opacity: 0.8;
+}

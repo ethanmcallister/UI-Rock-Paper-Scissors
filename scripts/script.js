@@ -4,80 +4,164 @@ function getComputerChoice() {
     return choices[randomIndex];
 }
 
-function getHumanChoice() {
-    let humanInput = prompt("Enter a number from 0-2:\n0: Rock\n1: Paper\n2: Scissors");
-    if (humanInput == 0) {
-        return "rock";
-    } else if (humanInput == 1) {
-        return "paper";
-    } else if (humanInput == 2) {
-        return "scissors";
-    }
-
-    return "invalid";
-}
-
 function playRound(humanChoice, computerChoice) {
-    // print the choices
-    console.log("Computer chose " + computerChoice + "\nYou chose " + humanChoice);
+    // print the choices (only show the 2 choices)
+    displayChoices(humanChoice, computerChoice);
 
     // determine winner, display winner, update scores
-    if (humanChoice == "invalid") {
-        console.log("Invalid input. Try again.");
-    } else if (humanChoice == computerChoice) {
+    if (humanChoice === computerChoice) {
         console.log("Tie!");
-    } else if (humanChoice == "rock") {
-        if (computerChoice == "paper") {
+        updateText.textContent = "Tie!";
+    } else if (humanChoice === "rock") {
+        if (computerChoice === "paper") {
             console.log("You lose!");
+            updateText.textContent = "You lose!";
             computerScore++;
         } else {
             console.log("You win!");
+            updateText.textContent = "You win!";
             humanScore++;
         }
-    } else if (humanChoice == "paper") {
-        if (computerChoice == "scissors") {
+    } else if (humanChoice === "paper") {
+        if (computerChoice === "scissors") {
             console.log("You lose!");
+            updateText.textContent = "You lose!";
             computerScore++;
         } else {
             console.log("You win!");
+            updateText.textContent = "You win!";
             humanScore++;
         }
     } else {
-        if (computerChoice == "rock") {
+        if (computerChoice === "rock") {
             console.log("You lose!");
+            updateText.textContent = "You lose!";
             computerScore++;
         } else {
             console.log("You win!");
+            updateText.textContent = "You win!";
             humanScore++;
         }
+    }
+
+    setTimeout(() => {
+        setDefaultButtonDisplay();
+    }, 1500);  // sleep for 1.5 seconds
+
+    updateScore();
+}
+
+function displayChoices(humanChoice, computerChoice) {
+
+    // set rock to be humanChoice, paper to be none, scissors to be computerChoice
+    rockImg.src = `./media/${humanChoice}.png`;
+    rockImg.alt = `"${humanChoice} image"`;
+
+    paperImg.src = 'none';
+    paperImg.alt = '';
+
+    scissorsImg.src = `./media/${computerChoice}.png`;
+    scissorsImg.alt = `"${computerChoice} image"`;
+}
+
+function setDefaultButtonDisplay() {
+    if (!isGameOver()) {
+        rockImg.src = "./media/rock.png";
+        rockImg.alt = "rock image";
+    
+        paperImg.src = "./media/paper.png";
+        paperImg.alt = "paper image";
+    
+        scissorsImg.src = "./media/scissors.png";
+        scissorsImg.alt = "scissors image";
     }
 }
 
 function getWinner(humanScore, computerScore) {
     if (computerScore > humanScore) {
-        return "Computer Wins!";
+        return "Your Opponent is the Winner!";
     } else {
-        return "You Win!";
+        return "You Win Overall!";
     }
 }
 
+function isGameOver() {
+    if (humanScore >= 2 || computerScore >= 2) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Event listener function
+function handleClick(event) {
+    let opponentChoice = getComputerChoice();
+
+    if (event.currentTarget.id === "rock") {
+        playRound("rock", opponentChoice);
+    } else if (event.currentTarget.id === "paper") {
+        playRound("paper", opponentChoice);
+    } else if (event.currentTarget.id === "scissors") {
+        playRound("scissors", opponentChoice);
+    }
+
+    console.log(humanScore);
+    console.log(computerScore);
+
+    if (isGameOver()) {
+        let message = getWinner(humanScore, computerScore);
+
+        // Print winner to the h1
+        let titleH1 = document.querySelector("#title-container h1");
+        titleH1.textContent = message;
+
+        // Remove event listeners
+        buttons.forEach((button) => {
+            button.removeEventListener("click", handleClick);
+        });
+
+        addPlayAgainButton();
+    }
+}
+
+function updateScore() {
+    // update my score
+    myScoreH2.textContent = `You: ${humanScore}`;
+    // update opponent score
+    computerScoreH2.textContent = `Opponent: ${computerScore}`;
+}
+
+function addPlayAgainButton() {
+    updateText.remove();
+    updateContainer.appendChild(playAgainButton);
+
+    playAgainButton.addEventListener("click", () => {
+        location.reload();
+    });
+}
+
+// declare variables
 let humanScore = 0;
 let computerScore = 0;
 
-console.log("Rock Paper Scissors! First to 2 Wins!");
+const rockImg = document.querySelector("#rock img");
+const paperImg = document.querySelector("#paper img");
+const scissorsImg = document.querySelector("#scissors img");
 
-while (humanScore < 2 && computerScore < 2) {
-    let humanChoice = getHumanChoice();
-    let computerChoice = getComputerChoice();
+let updateText = document.querySelector("#update-text");
 
-    playRound(humanChoice, computerChoice);
-    
-    // print the score
-    console.log("Computer Score: " + computerScore + "\nYour Score: " + humanScore);
+let myScoreH2 = document.querySelector("#my-score-count");
+let computerScoreH2 = document.querySelector("#computer-score-count");
 
-    // blank line
-    console.log(" ");
-}
+let updateContainer = document.querySelector("#update-container");
+let playAgainButton = document.createElement("button");
+playAgainButton.textContent = "Play Again?";
+playAgainButton.id = "play-again-button";
 
-let winner = getWinner(humanScore, computerScore);
-alert(winner + "\nOverall Score:\nComputer Score: " + computerScore + "\nYour Score: " + humanScore);
+// add click listener to buttons
+const buttons = document.querySelectorAll("button");
+
+buttons.forEach((button) => {
+    // add click listener
+    button.addEventListener("click", handleClick);
+});
